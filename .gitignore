@@ -1,2 +1,5 @@
+**/.DS_Store
 compile_and_flush_code.sh
 build/**
+flask/*.ino
+**/__pycache__
