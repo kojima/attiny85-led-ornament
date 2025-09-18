@@ -8,7 +8,7 @@
 #define WS2812_VCC  4 // Neopixel power line
 
 // How many NeoPixels are attached to the Arduino?
-#define NUMPIXELS 4 // Popular NeoPixel ring size
+#define NUMPIXELS 1 // Popular NeoPixel ring size
 
 // When setting up the NeoPixel library, we tell it how many pixels,
 // and which pin to use to send signals. Note that for older NeoPixel
@@ -17,7 +17,7 @@
 Adafruit_NeoPixel pixels(NUMPIXELS, WS2812_DATA, NEO_GRB + NEO_KHZ800);
 
 long counter = 0;
-int wakeupUnit = 10;
+int wakeupUnit = 50;
 
 typedef struct rgb {
     int r;
@@ -48,7 +48,10 @@ void setup(){
 
 
 void sleepNow() {
+  ADCSRA &= ~_BV(ADEN);                   // trun off the AD converter, ADEN(ADC Enable): 7th bit, identical to ADCSRA &= 01111111;
+                                          // this suppresses the large volume of the energy consumption.
   digitalWrite(WS2812_VCC, LOW);
+ 
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);    // sleep mode is set here
   sleep_enable();                         // enables the sleep bit in the mcucr register so sleep is possible
   attachInterrupt(                        // use interrupt 0 (pin 2) and run function wakeUpNow when pin 2 gets LOW
@@ -57,7 +60,7 @@ void sleepNow() {
     LOW
   );
   
-  sleep_mode();                          // here the device is actually put to sleep!!
+  sleep_cpu();                           // here the device is actually put to sleep!!
   
   sleep_disable();                       // first thing after waking from sleep: disable sleep...
   detachInterrupt(                       // disables interrupton pin 2 so the wakeUpNow code will not be executed during normal running time.
@@ -74,8 +77,9 @@ void wakeUpNow(){        // here the interrupt is handled after wakeup
 }
 
 void loop(){
-  if (counter % wakeupUnit == 0) {
+  if (counter % wakeupUnit == 0 || counter >= wakeupUnit) {
     handleOnShaked();
+    counter = 0;
   }
   counter++;
 
