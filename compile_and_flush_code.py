@@ -1,0 +1,134 @@
+import argparse
+import os
+import requests
+import shutil
+import subprocess
+from subprocess import PIPE
+import tkinter
+import tkinter.ttk
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--arduino-cli",
+    required=True,
+    type=str,
+    metavar="/path/to/arduino-cli",
+    help="Path to arduino-cli",
+)
+parser.add_argument(
+    "--avrdude",
+    required=True,
+    type=str,
+    metavar="/path/to/avrdude",
+    help="Path to avrdude",
+)
+parser.add_argument(
+    "--file-server",
+    required=True,
+    type=str,
+    metavar="https://file-server.com",
+    help="File server URL",
+)
+
+
+args = parser.parse_args()
+
+if not os.path.exists(args.arduino_cli):
+    raise FileNotFoundError(f"{args.arduino_cli} not found")
+
+if not os.path.exists(args.avrdude):
+    raise FileNotFoundError(f"{args.avrdude} not found")
+
+root = None
+combobox = None
+button = None
+
+users = {
+    "ユーザー1": "user1",
+    "ユーザー2": "user2",
+    "ユーザー3": "user3",
+    "ユーザー4": "user4",
+    "ユーザー5": "user5",
+    "ユーザー6": "user6",
+    "ユーザー7": "user7",
+    "ユーザー8": "user8",
+}
+
+
+def compile_and_flush_code():
+    global combobox
+    global button
+
+    button.config(state="disabled")
+    button.update()
+
+    user = combobox.get()
+    print(user, users[user])
+
+    if os.path.exists("build"):
+        shutil.rmtree("build")
+
+    # download
+    button.config(text="ダウンロード中...")
+    button.update()
+    print("ダウンロード中...")
+    # download_file(users[user], './onshaked_handler.ino')
+    url = args.file_server if args.file_server[-1] != "/" else args.file_server[:-1]
+    url = f"{url}/download/{users[user]}"
+    print(url)
+    r = requests.get(url, allow_redirects=True)
+    open("./onshaked_handler.ino", "wb").write(r.content)
+
+    # compile
+    button.config(text="コンパイル中...")
+    button.update()
+    print("コンパイル中...")
+    print(
+        f"{args.arduino_cli} compile --fqbn ATTinyCore:avr:attinyx5opti --build-path ./build"
+    )
+    proc = subprocess.run(
+        f"{args.arduino_cli} compile --fqbn ATTinyCore:avr:attinyx5opti --build-path ./build",
+        shell=True,
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    stdout = proc.stdout
+    print(stdout)
+
+    # flush
+    button.config(text="書き込み中...")
+    button.update()
+    print("書き込み中...")
+    print(
+        f"{args.avrdude} -C./avrdude.conf -v -pattiny85 -cusbasp -Uflash:w:build/led_ornament.ino.hex:i"
+    )
+    proc = subprocess.run(
+        f"{args.avrdude} -C./avrdude.conf -v -pattiny85 -cusbasp -Uflash:w:build/led_ornament.ino.hex:i",
+        shell=True,
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    stdout = proc.stdout
+    print(stdout)
+
+    button.config(text="コンパイル & 書き込み", state="normal")
+    button.update()
+
+
+root = tkinter.Tk()
+root.title("LEDオーナメント | 書き込みツール")
+root.geometry("320x160")
+root.configure(background="#EEEEEE")
+
+combobox = tkinter.ttk.Combobox(
+    root, state="readonly", values=[key for key in users.keys()]
+)
+combobox.current(0)
+combobox.pack(pady=24)
+
+button = tkinter.Button(
+    text="コンパイル & 書き込み", padx=24, pady=16, command=compile_and_flush_code
+)
+button.pack(pady=16)
+
+root.mainloop()
