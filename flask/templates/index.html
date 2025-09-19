@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>LED:bit</title>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/ui.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/ble.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blocks/block-editor.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blocks/common-blocks.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blocks/container-blocks.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blocks/command-blocks.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blocks/loop-blocks.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blocks/neopixel-blocks.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blocks/event-blocks.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/blocks/variable-blocks.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
+
+    <!-- jscolor: https://jscolor.com -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jscolor/jscolor.js') }}"></script>
+
+    <!-- highlight.js: https://github.com/highlightjs/highlight.js  -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='js/highlightjs/styles/arduino-light.css') }}">
+    <script src="{{ url_for('static', filename='js/highlightjs/highlight.min.js') }}"></script>
+
+    <!-- fontawesome: https://fontawesome.com -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontawesome/css/all.css') }}">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}" />
+
+    <style>
+        #log {
+            display: none;
+            width: 100%;
+            min-height: 120px;
+            max-height: 240px;
+            overflow: auto;
+            background-color: #ddd;
+            margin-top: 12px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <!--
+    <button id="connect" onclick="connectToBle()">Connect</button>
+    <button id="disconnect" onclick="disconnectFromBle()" disabled>Disconnect</button>
+    -->
+    <!--
+    <div>LED:
+        <button onclick="turnOnLed()">ON</button>
+        <button onclick="turnOffLed()">OFF</button>
+    </div>
+    -->
+    <!--
+    <div>LED strip:
+        <button onclick="turnOffLed()">OFF</button>
+        <button onclick="turnRedLed()">Red</button>
+        <button onclick="turnGreenLed()">Green</button>
+        <button onclick="turnBlueLed()">Blue</button>
+    </div>
+    <div>
+        Brightness:
+        <input type="range" id="brightness" min="0" max="255" value="255" onchange="handleSliderChanged()">
+    </div>
+    <div id="button_wrapper">
+        <span>Button state:</span><span id="push_button" onmousedown="handleButtonDown()" onmouseup="handleButtonUp()"
+            onmouseleave="handleButtonUp()"></span>
+    </div>
+    -->
+    <!--
+    <div>
+        Send text:
+        <input type="text" id="text_value" />
+        <button onclick="sendText()">Send</button>
+    </div>
+    -->
+    <div id="main">
+        <div id="header">
+            <div id="title"><i class="fa-solid fa-bolt fa-xl"></i><div class="text">LED:bit</div></div>
+            <div id="editor_switch">
+                <div id="slider" class="left"></div>
+                <div id="editor_block" class="option selected">
+                    <i class="fa-solid fa-puzzle-piece"></i><span class="text">ブロック</span>
+                </div>
+                <div id="editor_arduino" class="option">
+                    <i class="fa-solid fa-code"></i><span class="text">Arduino</span>
+                </div>
+            </div>
+        </div>
+        <div id="container">
+            <div id="left_pane">
+                <div id="simulator">
+                    <svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 318 318" style="enable-background:new 0 0 318 318;" xml:space="preserve">
+                        <style type="text/css">
+                            .st0{fill:#F2F1F1;}
+                            .st1{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter);}
+                            
+                                .st2{mask:url(#_mask_LEenGfD6pBCKCeY0eW2QCUdalCEjuGsd_00000167398746132249672340000005708457153026035609_);fill:#FFFFFF;stroke:#747474;stroke-width:4;stroke-linecap:square;stroke-miterlimit:3;}
+                            .st3{fill:#464646;}
+                            .st4{fill:#5D5D5D;}
+                            .st5{fill:url(#SVGID_1_);}
+                            .st6{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000034804619788765369710000005938393558467621535_);}
+                            
+                                .st7{mask:url(#_mask_qpIqKKfg8yh34WPOfwGoIJjzkrthaEPA_00000041982854208076624330000008332164293829052307_);fill:url(#SVGID_00000122713286723814792220000001641455405733157561_);stroke:#747474;stroke-width:3;stroke-linecap:square;stroke-miterlimit:3;}
+                            .st8{fill:url(#SVGID_00000130611567465171642600000018053963942234658184_);}
+                            .st9{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000019674647897115561060000016441800929987279533_);}
+                            
+                                .st10{mask:url(#_mask_yP4cvE5aFl880A972c1me0neQaYUx8qD_00000066509998327825582470000015655354749372672145_);fill:url(#SVGID_00000049911297958983246570000006001354251273334939_);stroke:#747474;stroke-width:3;stroke-linecap:square;stroke-miterlimit:3;}
+                            .st11{fill:#FFFFFF;}
+                            .st12{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000009578563105784110090000012756022234890856583_);}
+                            
+                                .st13{mask:url(#_mask_qCQWbUcGlN2hJTL68rp3yomKGox9l1lv_00000026841896561393021710000005365702586851466676_);fill:#FFFFFF;stroke:#8B8B8B;stroke-width:6;stroke-linecap:square;stroke-miterlimit:3;}
+                            .st14{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000031919316579375503480000008221498505918879381_);}
+                            
+                                .st15{mask:url(#_mask_lj5JT5UQAnXHLA3QxVAUSON8bPwlgGq1_00000179622086910756723850000004041776613489720766_);fill:#FFFFFF;stroke:#8B8B8B;stroke-width:6;stroke-linecap:square;stroke-miterlimit:3;}
+                            .st16{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000137094436566273854910000001976103060702201992_);}
+                            
+                                .st17{mask:url(#_mask_ql8XLSR6AC8ucjAndYPdZgg4jWJPFNOM_00000005959691014477311610000011864536410251947151_);fill:#FFFFFF;stroke:#8B8B8B;stroke-width:6;stroke-linecap:square;stroke-miterlimit:3;}
+                            .st18{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000070084983699658444110000016902948081539552695_);}
+                            
+                                .st19{mask:url(#_mask_ZShjO47uKVo17WXoiLhgClh6Y4gUfbQy_00000145020640661167381910000006490819459544411291_);fill:#FFFFFF;stroke:#8B8B8B;stroke-width:6;stroke-linecap:square;stroke-miterlimit:3;}
+                            .st20{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000029013084892432796640000011812375980568658836_);}
+                            
+                                .st21{mask:url(#_mask_fwF2vwLFIGVtdZYPBkK1JIFMMqGdsrmZ_00000137827429171893011530000002841516170332087944_);fill:#FFFFFF;stroke:#8B8B8B;stroke-width:6;stroke-linecap:square;stroke-miterlimit:3;}
+                            .st22{fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000061458296888703210880000010551198022346196139_);}
+                            
+                                .st23{mask:url(#_mask_IESmjuLZpgHGOVM5MJXS90eNnLwWIudZ_00000055673525824411697140000002369760302802920621_);fill:#FFFFFF;stroke:#8B8B8B;stroke-width:6;stroke-linecap:square;stroke-miterlimit:3;}
+                            .st24{fill:#A8A8A8;}
+                            .st25{fill:#CCCCCC;}
+                            .st26{fill:#CECECE;}
+                            .st27{fill:#999999;}
+                            .st28{fill:#CCCC00;}
+                            .st29{fill:#000066;}
+                            .st30{fill:#E5E5E5;}
+                            .st31{opacity:0.8;}
+                            .st32{opacity:0.48;fill:#512800;}
+                            .st33{opacity:0.48;fill:#FFFFFF;}
+                            .st34{opacity:0.9;fill:#E5E5E5;}
+                            .st35{fill:#CC8246;}
+                            .st36{fill:#555555;}
+                        </style>
+                        <circle vector-effect="non-scaling-stroke" class="st0" cx="159" cy="159" r="155"/>
+                        <defs>
+                            <filter id="Adobe_OpacityMaskFilter" filterUnits="userSpaceOnUse" x="2" y="2" width="314" height="314">
+                                <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+                            </filter>
+                        </defs>
+                        <mask maskUnits="userSpaceOnUse" x="2" y="2" width="314" height="314" id="_mask_LEenGfD6pBCKCeY0eW2QCUdalCEjuGsd_00000167398746132249672340000005708457153026035609_">
+                            <circle vector-effect="non-scaling-stroke" class="st1" cx="159" cy="159" r="155"/>
+                        </mask>
+                        <circle vector-effect="non-scaling-stroke" class="st2" cx="159" cy="159" r="155"/>
+                        <path class="st3" d="M118.5,201h81c1.9,0,3.4,1.5,3.4,3.4v80.2c0,1.9-1.5,3.4-3.4,3.4h-81c-1.9,0-3.4-1.5-3.4-3.4v-80.2
+                            C115.1,202.5,116.6,201,118.5,201z"/>
+                        <path class="st4" d="M120.9,204.4h76.1c1.5,0,2.7,1.2,2.7,2.7V282c0,1.5-1.2,2.7-2.7,2.7h-76.1c-1.5,0-2.7-1.2-2.7-2.7V207
+                            C118.3,205.6,119.5,204.4,120.9,204.4z"/>
+                        <radialGradient id="SVGID_1_" cx="-478.5608" cy="638.763" r="0.5" gradientTransform="matrix(58 1.25 2 -56.75 26591.25 36888.5)" gradientUnits="userSpaceOnUse">
+                            <stop  offset="0.6958" style="stop-color:#FFFFFF"/>
+                            <stop  offset="1" style="stop-color:#6F6D6D"/>
+                        </radialGradient>
+                        <ellipse vector-effect="non-scaling-stroke" class="st5" cx="112.2" cy="40.5" rx="22.2" ry="22.5"/>
+                        <defs>
+                            
+                                <filter id="Adobe_OpacityMaskFilter_00000009577530520240553980000001928086709316034751_" filterUnits="userSpaceOnUse" x="88.5" y="16.5" width="47.5" height="48">
+                                <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+                            </filter>
+                        </defs>
+                        <mask maskUnits="userSpaceOnUse" x="88.5" y="16.5" width="47.5" height="48" id="_mask_qpIqKKfg8yh34WPOfwGoIJjzkrthaEPA_00000041982854208076624330000008332164293829052307_">
+                            
+                                <ellipse vector-effect="non-scaling-stroke" style="fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000009577530520240553980000001928086709316034751_);" cx="112.2" cy="40.5" rx="22.2" ry="22.5"/>
+                        </mask>
+                        <radialGradient id="SVGID_00000097463360297224556210000011703852064625465791_" cx="-478.5608" cy="638.763" r="0.5" gradientTransform="matrix(58.0084 0.9967 1.7801 -58.0255 26735.7305 37582.0273)" gradientUnits="userSpaceOnUse">
+                            <stop  offset="0.6958" style="stop-color:#FFFFFF"/>
+                            <stop  offset="1" style="stop-color:#6F6D6D"/>
+                        </radialGradient>
+                        <ellipse vector-effect="non-scaling-stroke" style="mask:url(#_mask_qpIqKKfg8yh34WPOfwGoIJjzkrthaEPA_00000041982854208076624330000008332164293829052307_);fill:url(#SVGID_00000097463360297224556210000011703852064625465791_);stroke:#747474;stroke-width:3;stroke-linecap:square;stroke-miterlimit:3;" cx="112.2" cy="40.5" rx="22.2" ry="22.5"/>
+                        <radialGradient id="SVGID_00000147217090684130467310000008235121325473658042_" cx="-478.53" cy="638.7729" r="0.5" gradientTransform="matrix(55.408 0.952 1.025 -57.871 26065.3145 37462.4883)" gradientUnits="userSpaceOnUse">
+                            <stop  offset="0.6958" style="stop-color:#FFFFFF"/>
+                            <stop  offset="1" style="stop-color:#979696"/>
+                        </radialGradient>
+                        <ellipse vector-effect="non-scaling-stroke" style="fill:url(#SVGID_00000147217090684130467310000008235121325473658042_);" cx="205.7" cy="40.5" rx="22.2" ry="22.5"/>
+                        <defs>
+                            
+                                <filter id="Adobe_OpacityMaskFilter_00000016045724862752133080000018425139818794169757_" filterUnits="userSpaceOnUse" x="181.9" y="16.5" width="47.5" height="48">
+                                <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+                            </filter>
+                        </defs>
+                        <mask maskUnits="userSpaceOnUse" x="181.9" y="16.5" width="47.5" height="48" id="_mask_yP4cvE5aFl880A972c1me0neQaYUx8qD_00000066509998327825582470000015655354749372672145_">
+                            
+                                <ellipse vector-effect="non-scaling-stroke" style="fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000016045724862752133080000018425139818794169757_);" cx="205.7" cy="40.5" rx="22.2" ry="22.5"/>
+                        </mask>
+                        <radialGradient id="SVGID_00000116195143082289551650000017502780457979971001_" cx="-478.53" cy="638.7729" r="0.5" gradientTransform="matrix(55.408 0.952 0.9814 -55.41 26093.1562 35890.457)" gradientUnits="userSpaceOnUse">
+                            <stop  offset="0.6958" style="stop-color:#FFFFFF"/>
+                            <stop  offset="1" style="stop-color:#979696"/>
+                        </radialGradient>
+                        <ellipse vector-effect="non-scaling-stroke" style="mask:url(#_mask_yP4cvE5aFl880A972c1me0neQaYUx8qD_00000066509998327825582470000015655354749372672145_);fill:url(#SVGID_00000116195143082289551650000017502780457979971001_);stroke:#747474;stroke-width:3;stroke-linecap:square;stroke-miterlimit:3;" cx="205.7" cy="40.5" rx="22.2" ry="22.5"/>
+                        <ellipse vector-effect="non-scaling-stroke" class="st11" cx="24.9" cy="161.7" rx="10.7" ry="10.7"/>
+                        <defs>
+                            
+                                <filter id="Adobe_OpacityMaskFilter_00000155132474283371766370000016817847472171771579_" filterUnits="userSpaceOnUse" x="11.3" y="148" width="27.3" height="27.4">
+                                <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+                            </filter>
+                        </defs>
+                        <mask maskUnits="userSpaceOnUse" x="11.3" y="148" width="27.3" height="27.4" id="_mask_qCQWbUcGlN2hJTL68rp3yomKGox9l1lv_00000026841896561393021710000005365702586851466676_">
+                            
+                                <ellipse vector-effect="non-scaling-stroke" style="fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000155132474283371766370000016817847472171771579_);" cx="24.9" cy="161.7" rx="10.7" ry="10.7"/>
+                        </mask>
+                        <ellipse vector-effect="non-scaling-stroke" class="st13" cx="24.9" cy="161.7" rx="10.7" ry="10.7"/>
+                        <ellipse vector-effect="non-scaling-stroke" class="st11" cx="35.6" cy="111.3" rx="10.7" ry="10.7"/>
+                        <defs>
+                            
+                                <filter id="Adobe_OpacityMaskFilter_00000134227040042091072280000018208683882067125390_" filterUnits="userSpaceOnUse" x="21.9" y="97.6" width="27.3" height="27.4">
+                                <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+                            </filter>
+                        </defs>
+                        <mask maskUnits="userSpaceOnUse" x="21.9" y="97.6" width="27.3" height="27.4" id="_mask_lj5JT5UQAnXHLA3QxVAUSON8bPwlgGq1_00000179622086910756723850000004041776613489720766_">
+                            
+                                <ellipse vector-effect="non-scaling-stroke" style="fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000134227040042091072280000018208683882067125390_);" cx="35.6" cy="111.3" rx="10.7" ry="10.7"/>
+                        </mask>
+                        <ellipse vector-effect="non-scaling-stroke" class="st15" cx="35.6" cy="111.3" rx="10.7" ry="10.7"/>
+                        <ellipse vector-effect="non-scaling-stroke" class="st11" cx="293.7" cy="161.7" rx="10.7" ry="10.7"/>
+                        <defs>
+                            
+                                <filter id="Adobe_OpacityMaskFilter_00000152975758485323992090000010738945790835775397_" filterUnits="userSpaceOnUse" x="280" y="148" width="27.3" height="27.4">
+                                <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+                            </filter>
+                        </defs>
+                        <mask maskUnits="userSpaceOnUse" x="280" y="148" width="27.3" height="27.4" id="_mask_ql8XLSR6AC8ucjAndYPdZgg4jWJPFNOM_00000005959691014477311610000011864536410251947151_">
+                            
+                                <ellipse vector-effect="non-scaling-stroke" style="fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000152975758485323992090000010738945790835775397_);" cx="293.7" cy="161.7" rx="10.7" ry="10.7"/>
+                        </mask>
+                        <ellipse vector-effect="non-scaling-stroke" class="st17" cx="293.7" cy="161.7" rx="10.7" ry="10.7"/>
+                        <ellipse vector-effect="non-scaling-stroke" class="st11" cx="283" cy="111.3" rx="10.7" ry="10.7"/>
+                        <defs>
+                            
+                                <filter id="Adobe_OpacityMaskFilter_00000062873239143913696010000016308936093852892084_" filterUnits="userSpaceOnUse" x="269.3" y="97.6" width="27.3" height="27.4">
+                                <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+                            </filter>
+                        </defs>
+                        <mask maskUnits="userSpaceOnUse" x="269.3" y="97.6" width="27.3" height="27.4" id="_mask_ZShjO47uKVo17WXoiLhgClh6Y4gUfbQy_00000145020640661167381910000006490819459544411291_">
+                            
+                                <ellipse vector-effect="non-scaling-stroke" style="fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000062873239143913696010000016308936093852892084_);" cx="283" cy="111.3" rx="10.7" ry="10.7"/>
+                        </mask>
+                        <ellipse vector-effect="non-scaling-stroke" class="st19" cx="283" cy="111.3" rx="10.7" ry="10.7"/>
+                        <ellipse vector-effect="non-scaling-stroke" class="st11" cx="35.6" cy="210.7" rx="10.7" ry="10.7"/>
+                        <defs>
+                            
+                                <filter id="Adobe_OpacityMaskFilter_00000046338454629353341570000017012321288858645945_" filterUnits="userSpaceOnUse" x="21.9" y="197" width="27.3" height="27.4">
+                                <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+                            </filter>
+                        </defs>
+                        <mask maskUnits="userSpaceOnUse" x="21.9" y="197" width="27.3" height="27.4" id="_mask_fwF2vwLFIGVtdZYPBkK1JIFMMqGdsrmZ_00000137827429171893011530000002841516170332087944_">
+                            
+                                <ellipse vector-effect="non-scaling-stroke" style="fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000046338454629353341570000017012321288858645945_);" cx="35.6" cy="210.7" rx="10.7" ry="10.7"/>
+                        </mask>
+                        <ellipse vector-effect="non-scaling-stroke" class="st21" cx="35.6" cy="210.7" rx="10.7" ry="10.7"/>
+                        <ellipse vector-effect="non-scaling-stroke" class="st11" cx="282.4" cy="210.7" rx="10.7" ry="10.7"/>
+                        <defs>
+                            
+                                <filter id="Adobe_OpacityMaskFilter_00000045583964318694888440000005375749238017201058_" filterUnits="userSpaceOnUse" x="268.8" y="197" width="27.3" height="27.4">
+                                <feColorMatrix  type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/>
+                            </filter>
+                        </defs>
+                        <mask maskUnits="userSpaceOnUse" x="268.8" y="197" width="27.3" height="27.4" id="_mask_IESmjuLZpgHGOVM5MJXS90eNnLwWIudZ_00000055673525824411697140000002369760302802920621_">
+                            
+                                <ellipse vector-effect="non-scaling-stroke" style="fill:#FFFFFF;filter:url(#Adobe_OpacityMaskFilter_00000045583964318694888440000005375749238017201058_);" cx="282.4" cy="210.7" rx="10.7" ry="10.7"/>
+                        </mask>
+                        <ellipse vector-effect="non-scaling-stroke" class="st23" cx="282.4" cy="210.7" rx="10.7" ry="10.7"/>
+                        <rect x="127" y="284.6" class="st24" width="5" height="19.4"/>
+                        <rect x="147.2" y="284.6" class="st24" width="5" height="19.4"/>
+                        <rect x="187" y="284.6" class="st24" width="5" height="19.4"/>
+                        <rect x="167.3" y="284.6" class="st24" width="5" height="19.4"/>
+                        <rect x="127" y="184.3" class="st24" width="5" height="20"/>
+                        <rect x="147.2" y="184.3" class="st24" width="5" height="20"/>
+                        <rect x="187" y="184.3" class="st24" width="5" height="20"/>
+                        <rect x="167.3" y="184.3" class="st24" width="5" height="20"/>
+                        <rect x="127" y="184.3" class="st25" width="5" height="9"/>
+                        <rect x="147.2" y="184.3" class="st25" width="5" height="9"/>
+                        <rect x="187" y="184.3" class="st25" width="5" height="9"/>
+                        <rect x="167.3" y="184.3" class="st25" width="5" height="9"/>
+                        <rect x="127" y="295" class="st25" width="5" height="9"/>
+                        <rect x="147.2" y="295" class="st25" width="5" height="9"/>
+                        <rect x="187" y="295" class="st25" width="5" height="9"/>
+                        <rect x="167.3" y="295" class="st25" width="5" height="9"/>
+                        <circle class="st26" cx="74" cy="89.8" r="3.1"/>
+                        <circle class="st26" cx="74" cy="111.4" r="4.2"/>
+                        <path class="st27" d="M93.8,113.9H74.1c-1.4,0-2.5-1.1-2.5-2.5v0c0-1.4,1.1-2.5,2.5-2.5h19.7V113.9z"/>
+                        <path class="st28" d="M95.1,91.2H74.2c-0.8,0-1.4-0.6-1.4-1.4l0,0c0-0.8,0.6-1.4,1.4-1.4h20.8V91.2z"/>
+                        <path class="st29" d="M239.8,131.5H90.5c-1.3,0-2.4-1.1-2.4-2.4V69.7c0-1.3,1.1-2.4,2.4-2.4h149.3c4.1,0,7.4,3.3,7.4,7.4v49.3
+                            C247.2,128.2,243.9,131.5,239.8,131.5z"/>
+                        <path class="st30" d="M173.2,173.9h-28.2c-0.8,0-1.5-0.7-1.5-1.5v-30c0-0.8,0.7-1.5,1.5-1.5h28.2c0.8,0,1.5,0.7,1.5,1.5v30
+                            C174.7,173.2,174,173.9,173.2,173.9z"/>
+                        <g class="st31">
+                            <rect x="149.6" y="148" class="st32" width="18.9" height="4.2"/>
+                            <rect x="149.6" y="162.6" class="st33" width="18.9" height="4.2"/>
+                        </g>
+                        <path id="led1" class="st34" d="M173.2,173.9h-28.2c-0.8,0-1.5-0.7-1.5-1.5v-30c0-0.8,0.7-1.5,1.5-1.5h28.2c0.8,0,1.5,0.7,1.5,1.5v30
+                            C174.7,173.2,174,173.9,173.2,173.9z"/>
+                        <path class="st26" d="M234.9,274.7h-22.4c-1,0-1.9-0.8-1.9-1.9v-10.6c0-1,0.8-1.9,1.9-1.9h22.4c1,0,1.9,0.8,1.9,1.9v10.6
+                            C236.7,273.8,235.9,274.7,234.9,274.7z"/>
+                        <rect x="217.6" y="260.3" class="st35" width="12.1" height="14.4"/>
+                        <path class="st26" d="M121.7,174.4h-18.9c-1,0-1.9-0.8-1.9-1.9V167c0-1,0.8-1.9,1.9-1.9h18.9c1,0,1.9,0.8,1.9,1.9v5.5
+                            C123.6,173.6,122.7,174.4,121.7,174.4z"/>
+                        <rect x="105.8" y="165.1" class="st35" width="12.8" height="9.3"/>
+                        <path class="st25" d="M175.7,152.6h-1v-5.1h1c0.7,0,1.2,0.6,1.2,1.2v2.7C176.9,152.1,176.3,152.6,175.7,152.6z"/>
+                        <path class="st25" d="M175.7,167.2h-1v-5.1h1c0.7,0,1.2,0.6,1.2,1.2v2.7C176.9,166.7,176.3,167.2,175.7,167.2z"/>
+                        <path class="st25" d="M142.5,152.6h1v-5.1h-1c-0.7,0-1.2,0.6-1.2,1.2v2.7C141.2,152.1,141.8,152.6,142.5,152.6z"/>
+                        <path class="st25" d="M142.5,167.2h1v-5.1h-1c-0.7,0-1.2,0.6-1.2,1.2v2.7C141.2,166.7,141.8,167.2,142.5,167.2z"/>
+                        <g>
+                            <g>
+                                <path class="st36" d="M187,164.2h0.7v9.1h5.3v0.6h-6V164.2z"/>
+                                <path class="st36" d="M195.8,164.2h6v0.6h-5.3v3.7h4.4v0.6h-4.4v4.2h5.4v0.6h-6.1V164.2z"/>
+                                <path class="st36" d="M204.6,164.2h2.3c3.1,0,4.6,1.9,4.6,4.8c0,2.9-1.5,4.9-4.6,4.9h-2.3V164.2z M206.8,173.3
+                                    c2.7,0,3.9-1.8,3.9-4.3c0-2.5-1.2-4.2-3.9-4.2h-1.6v8.5H206.8z"/>
+                                <path class="st36" d="M213.9,173.3h2.9v-7.7h-2.2v-0.4c1-0.1,1.8-0.3,2.4-0.6h0.5v8.8h2.7v0.6h-6.4V173.3z"/>
+                            </g>
+                        </g>
+                        <g>
+                            <g>
+                                <path class="st36" d="M208.5,207.8v-6h0.7v6c0,2.5,1.2,3.2,2.5,3.2c1.4,0,2.6-0.8,2.6-3.2v-6h0.7v6c0,2.9-1.5,3.8-3.2,3.8
+                                    C210,211.6,208.5,210.7,208.5,207.8z"/>
+                                <path class="st36" d="M218,210.8h2.9v-7.7h-2.2v-0.4c1-0.1,1.8-0.3,2.4-0.6h0.5v8.8h2.7v0.6H218V210.8z"/>
+                            </g>
+                        </g>
+                        <g>
+                            <g>
+                                <path class="st36" d="M101.9,154.2c0-3.1,1.8-5,4.3-5c1.2,0,2.1,0.6,2.6,1.1l-0.4,0.4c-0.5-0.6-1.3-1-2.2-1
+                                    c-2.2,0-3.6,1.7-3.6,4.4c0,2.7,1.4,4.4,3.6,4.4c1,0,1.8-0.4,2.5-1.2l0.4,0.4c-0.8,0.9-1.7,1.4-3,1.4
+                                    C103.7,159.2,101.9,157.2,101.9,154.2z"/>
+                                <path class="st36" d="M111.7,158.4h2.9v-7.7h-2.2v-0.4c1-0.1,1.8-0.3,2.4-0.6h0.5v8.8h2.7v0.6h-6.4V158.4z"/>
+                            </g>
+                        </g>
+                        <g>
+                            <g>
+                                <path class="st36" d="M211.6,283.2c0-3.1,1.8-5,4.3-5c1.2,0,2.1,0.6,2.6,1.1l-0.4,0.4c-0.5-0.6-1.3-1-2.2-1
+                                    c-2.2,0-3.6,1.7-3.6,4.4c0,2.7,1.4,4.4,3.6,4.4c1,0,1.8-0.4,2.5-1.2l0.4,0.4c-0.8,0.9-1.7,1.4-3,1.4
+                                    C213.4,288.2,211.6,286.2,211.6,283.2z"/>
+                                <path class="st36" d="M221,287.6c3.6-3.1,5.4-4.8,5.4-6.5c0-1.2-0.7-2.1-2.4-2.1c-1,0-1.9,0.5-2.6,1.2l-0.4-0.4
+                                    c0.8-0.8,1.8-1.4,3.1-1.4c1.9,0,3,1,3,2.6c0,1.9-1.9,3.6-5.1,6.4c0.6,0,1.2-0.1,1.8-0.1h3.8v0.6H221V287.6z"/>
+                            </g>
+                        </g>
+                        <circle class="st3" cx="189.5" cy="215.1" r="5.1"/>
+                        </svg>
+                </div>
+                <div id="simulator_buttons">
+                    <button class="ui button icon play-button play" title="シミュレーターを開始する" tabindex="0">
+                        <i class="fa-solid fa-play"></i>
+                        <i class="fa-solid fa-stop"></i>
+                    </button>
+                    <button id="replay_simulator" class="ui button icon restart-button" title="シミュレーターを再起動する" tabindex="0">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </div>
+
+                <div id="log">
+                </div>
+            </div>
+            <div id="right_pane">
+                <div id="blockly_tool_box">
+                    <div id="blockly_trash_space">
+                        <i class="fa-solid fa-trash"></i>
+                    </div>
+                    <svg id="blockly_drag_space"></svg>
+                    <div id="blockly_tool_box_table">
+                        <div class="blockly-tool-box-row basic" data-blockly-type="basic">
+                            <i class="icon fa-solid fa-star"></i><div class="label">基本</div>
+                        </div>
+                        <div class="blockly-tool-box-row neopixel" data-blockly-type="neopixel">
+                            <i class="icon fa-solid fa-spinner"></i><div class="label">Neopixel</div>
+                        </div>
+                        <div class="blockly-tool-box-row loop" data-blockly-type="loop">
+                            <i class="icon fa-solid fa-rotate-right"></i><div class="label">ループ</div>
+                        </div>
+                    </div>
+                    <svg class="blockly-tool-bow-list basic">
+                        <path class="blockly-flyout-background" d="M 0,0 h 300 a 8 8 0 0 1 8 8 v 713 a 8 8 0 0 1 -8 8 h -300 z">
+                        </path>
+                        <g class="blockly-flyout-label blocklyFlyoutHeading" transform="translate(16,8)" display="block">
+                            <rect class="blocklyFlyoutLabelBackground" rx="4" ry="4" width="48" height="36" x="34"></rect>
+                            <text class="blockly-flyout-label-text" x="35" y="23" text-anchor="left">基本</text>
+                            <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                            <path class="blockly-flyout-label-icon basic" d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>
+                            <g class="blockly-tool-bow-list-container basic" transform="translate(0, 60)"></g>
+                        </g>
+                    </svg>
+                    <svg class="blockly-tool-bow-list neopixel">
+                        <path class="blockly-flyout-background" d="M 0,0 h 300 a 8 8 0 0 1 8 8 v 713 a 8 8 0 0 1 -8 8 h -300 z">
+                        </path>
+                        <g class="blockly-flyout-label blocklyFlyoutHeading" transform="translate(16,8)" display="block">
+                            <rect class="blocklyFlyoutLabelBackground" rx="4" ry="4" width="48" height="36" x="34"></rect>
+                            <text class="blockly-flyout-label-text" x="35" y="23" text-anchor="left">Neopixel</text>
+                            <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                            <path class="blockly-flyout-label-icon neopixel" d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z"/>
+                            <g class="blockly-tool-bow-list-container neopixel" transform="translate(0, 60)"></g>
+                        </g>
+                    </svg>
+                    <svg class="blockly-tool-bow-list loop">
+                        <path class="blockly-flyout-background" d="M 0,0 h 300 a 8 8 0 0 1 8 8 v 713 a 8 8 0 0 1 -8 8 h -300 z"></path>
+                        <g class="blockly-flyout-label blocklyFlyoutHeading" transform="translate(16,8)" display="block">
+                            <rect class="blocklyFlyoutLabelBackground" rx="4" ry="4" width="48" height="36" x="34"></rect>
+                            <text class="blockly-flyout-label-text" x="35" y="23" text-anchor="left">ループ</text>
+                            <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                            <path class="blockly-flyout-label-icon loop" d="M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"/>
+                            <g class="blockly-tool-bow-list-container loop" transform="translate(0, 60)"></g>
+                        </g>
+                    </svg>
+                </div>
+                <div id="blockly_editor_wrapper" class="editor-wrapper selected">
+                    <!--
+                    <div id="tab_wrapper">
+                        <ul id="tab_list">
+                            <li></li>
+                        </ul>
+                        <span id="add_tab_button"><i class="fa-solid fa-circle-plus"></i></span>
+                    </div>
+                    -->
+                    <svg id="blockly_editor" width="1280" height="640">
+                        <defs>
+                            <pattern id="blocklyGridPattern" patternUnits="userSpaceOnUse" width="40.5" height="40.5" x="0" y="0">
+                                <line stroke="rgba(189, 195, 199, 0.30)" stroke-width="0.9" x1="17.1" y1="20.25" x2="23.400000000000002" y2="20.25"></line>
+                                <line stroke="rgba(189, 195, 199, 0.30)" stroke-width="0.9" x1="20.25" y1="17.1" x2="20.25" y2="23.400000000000002"></line>
+                            </pattern>
+                            <pattern id="blocklyDisabledPattern" patternUnits="userSpaceOnUse" width="10" height="10">
+                                <rect width="10" height="10" fill="#aaa"></rect>
+                                <path d="M 0 0 L 10 10 M 10 0 L 0 10" stroke="#cc0"></path>
+                            </pattern>
+                            <filter id="blocklySelectedGlowFilter" height="160%" width="180%" y="-30%" x="-40%">
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="0.5"></feGaussianBlur>
+                                <feComponentTransfer result="outBlur">
+                                    <feFuncA type="table" tableValues="0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1"></feFuncA>
+                                </feComponentTransfer>
+                                <feFlood flood-color="#fff200" flood-opacity="1" result="outColor"></feFlood>
+                                <feComposite in="outColor" in2="outBlur" operator="in" result="outGlow"></feComposite>
+                            </filter>
+                        </defs>
+                        <rect id="blockly_editor_background" x="0" , y="0" width="100%" height="100%" style='fill: url("#blocklyGridPattern")'></rect>
+                    </svg>
+                </div>
+                <div id="arduino_editor_wrapper" class="editor-wrapper">
+{% raw %}
+<div id="arduino_code_template">
+// LEDオーナメント点灯パターンプログラム
+
+LedColor led1 = {{0, 0, 0}, {0, 0, 0}};
+
+{{ code }}
+</div>
+<pre id="arduino_code_wrapper"><code id="arduino_code" class="language-cpp">
+// LEDオーナメント点灯パターンプログラム
+
+LedColor led1 = {{0, 0, 0}, {0, 0, 0}};
+
+// 揺さぶられたとき
+void handleOnShaked() {
+
+}
+</code></pre>
+{% endraw %}
+                </div>
+                <div id="upload_popup">
+                    <div id="upload_popup_inner">
+                        <div>アップロードしました！</div>
+                    </div>
+                </div>
+                <div id="copy_popup">
+                    <div id="copy_popup_inner">
+                        <div>コピーしました！</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <div id="upload_wrapper" class="wrapper hidden">
+                <button id="upload_code" class="button"><i class="fa-solid fa-arrow-up-from-bracket fa-2xl"></i></button>
+            </div>
+            <div id="copy_wrapper" class="wrapper deep-hidden hidden">
+                <button id="copy_code" class="button"><i class="fa-regular fa-copy fa-2xl"></i></button>
+            </div>
+            <!--
+            <div id="zoom_wrapper" class="wrapper">
+                <button id="zoom_out" class="button"><i class="fa-solid fa-circle-minus fa-xl"></i></button>
+                <button id="zoom_in" class="button"><i class="fa-solid fa-circle-plus fa-xl"></i></button>
+            </div>
+            -->
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,7 +1,12 @@
-from flask import Flask, request, send_file
+from flask import Flask, render_template, request, send_file
 from flask_cors import cross_origin
 
 app = Flask(__name__)
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 
 @app.route("/upload/<string:user>", methods=["POST"])

@@ -1,0 +1,745 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-size: 12pt;
+}
+
+@font-face {
+    font-family: MADE_Tommy_Soft;
+    src: url("fonts/MADE_Tommy_Soft_Bold_PERSONAL_USE.otf");
+}
+
+#title {
+    font-family: 'MADE_Tommy_Soft';
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+#title .text {
+    font-size: 1.6rem;
+}
+
+#button_wrapper {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+#push_button {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background-color: #ddd;
+    border: 1px solid #aaa;
+}
+
+#push_button.down {
+    background-color: #ff6666;
+    border: 1px solid #ff4444;
+}
+
+#tab_wrapper {
+    display: flex;
+    gap: 8px;
+    margin: 0 12px;
+    width: calc(100% - 24px);
+    justify-content: left;
+    align-items: center;
+}
+
+#tab_list {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 2px;
+    max-width: calc(100% - 32px);
+}
+
+#tab_list li {
+    list-style-type: none;
+    display: flex;
+    height: 2em;
+    background-color: #eee;
+    border: 1px solid #aaa;
+    width: 5em;
+    justify-content: right;
+    align-items: center;
+    padding: 0px 6px;
+    box-sizing: border-box;
+}
+
+#tab_list li .delete-tab-button {
+    cursor: pointer;
+    user-select: none;
+}
+
+#tab_list li .delete-tab-button .fa-circle-xmark,
+#add_tab_button .fa-circle-plus {
+    color: #999;
+}
+
+#tab_list li .delete-tab-button:hover .fa-circle-xmark,
+#add_tab_button:hover .fa-circle-plus {
+    color: #555;
+}
+
+*.hidden {
+    display: none;
+}
+
+.editor-wrapper {
+    display: none;
+    height: 100%;
+}
+
+.editor-wrapper.selected {
+    display: block;
+}
+
+#blockly_editor {
+    background-color: #eee;
+    height: 100%;
+}
+
+#blockly_editor,
+#blockly_editor * {
+    user-select: none;
+}
+
+.blockly-element {
+    z-index: 1;
+}
+
+.blockly-element:not(.grabbing) {
+    cursor: grab;
+}
+
+.blockly-element.grabbing,
+.blockly-element.grabbing * {
+    cursor: grabbing;
+}
+
+.blockly-element.moving {
+    opacity: 0.75;
+}
+
+#blockly_editor rect.moving {
+    cursor: all-scroll;
+}
+
+text.blocklyText {
+    font: 600 12pt "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;
+    fill: #fff;
+    stroke: none;
+}
+
+#main {
+    height: 100%;
+}
+
+#header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    background-color: #3454d1;
+    color: #fff;
+    padding: 0 24px;
+    z-index: 41;
+}
+
+#container {
+    display: flex;
+    width: 100%;
+    height: calc(100% - 136px);
+}
+
+#footer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    height: 80px;
+    padding: 0 24px;
+    background-color: #fff;
+    border-top: 2px solid #ddd;
+    box-sizing: border-box;
+    gap: 16px;
+    z-index: 41;
+}
+
+#editor_switch {
+    display: flex;
+    position: relative;
+    height: 42px;
+    background: rgba(27,28,29,.4);
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    border: 3px solid rgba(27, 28, 29, .2);
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#editor_switch #slider {
+    background-color: #fff;
+    height: 36px;
+    width: 160px;
+    position: absolute;
+    top: 0;
+    border-radius: 18px;
+    transition: left 0.3s ease-in-out;
+}
+
+#editor_switch #slider.left {
+    left: 0;
+}
+
+#editor_switch #slider.right {
+    left: calc(320px - 160px);
+}
+
+#editor_switch .option {
+    width: 160px;
+    text-align: center;
+    z-index: 1;
+    font-weight: 500;
+    color: #fff;
+    transition: color 0.3s ease-in-out;
+}
+
+#editor_switch .text {
+    margin-left: 0.5em;
+    user-select: none;
+}
+
+#editor_switch .option.selected {
+    color: #3454d1;
+}
+
+#left_pane {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 400px;
+    padding-top: 32px;
+    background-color: #fdfdff;
+    box-sizing: border-box;
+    z-index: 41;
+}
+
+#right_pane {
+    position: relative;
+    width: calc(100% - 400px);
+    height: 100%;
+    box-sizing: border-box;
+    border-left: 1px solid #ddd;
+}
+
+#simulator {
+    width: 320px;
+    height: 320px;
+}
+
+#blockly_tool_box {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;;
+    min-width: 184px;
+    background-color: #fff;
+    box-shadow: 4px 0 2px -4px rgba(0,0,0,.12),
+        4px 0 2px -4px rgba(0,0,0,.24);
+    overflow-x: visible;
+    overflow-y: visible;
+    padding-top: 0;
+    z-index: 40;
+    border-right: 1px solid #ddd;
+    user-select: none;
+    /*opacity: 0.5;*/
+}
+
+#blockly_tool_box.hidden {
+    display: none;
+}
+
+#blockly_trash_space {
+    position: absolute;
+    z-index: 2;
+    width: 184px;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    bottom: 0;
+    font-size: 4em;
+    background-color: rgb(255, 255, 255);
+    color: #9400D3;
+    display: none;
+    opacity: 0;
+    transition: background-color 1s ease;
+
+}
+
+#blockly_trash_space.active {
+    display: flex;
+}
+
+#blockly_trash_space.red {
+    background-color: #ff0000;
+}
+
+#blockly_drag_space {
+    position: absolute;
+    z-index: 3;
+    overflow: visible;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 1px;
+}
+
+#blockly_tool_box_table {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow-x: visible;
+    overflow-y: auto;
+}
+
+#simulator > svg {
+    width: 100%;
+    height: 100%;
+}
+
+#simulator_buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    margin-top: 24px;
+}
+
+#simulator_buttons .button {
+    cursor: pointer;
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    outline: none;
+    border: none;
+    vertical-align: baseline;
+    background: #e0e1e2 none;
+    color: rgba(0,0,0,.6);
+    text-transform: none;
+    text-shadow: none;
+    font-weight: 700;
+    line-height: 1em;
+    font-style: normal;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    transition: opacity .1s ease,
+        background-color .1s ease,
+        color .1s ease,
+        box-shadow .1s ease,
+        background .1s ease;
+    will-change: "";
+    -webkit-tap-highlight-color: transparent;
+}
+
+#simulator_buttons .button:focus,
+#simulator_buttons .button:hover {
+    filter: grayscale(.15) brightness(.85) contrast(1.3);
+}
+
+#simulator_buttons .button:active {
+    background-color: #babbbc;
+    background-image: "";
+    color: rgba(0,0,0,.9);
+}
+
+#simulator_buttons .button.play .fa-play {
+    color: #107c10 !important;
+}
+
+#simulator_buttons .button.stop .fa-play,
+#simulator_buttons .button.play .fa-stop {
+    display: none;
+}
+
+#simulator_buttons .button:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+#simulator_buttons .button:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+#blockly_tool_box .blockly-tool-box-row {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    min-height: 40px;
+    line-height: 22px;
+    padding-right: 8px;
+    white-space: nowrap;
+    cursor: pointer;
+    border-left-width: 12px;
+    box-shadow: inset 0 -1px 0 0 #ecf0f1;
+    transition: background-color 1s ease;
+}
+
+#blockly_tool_box .blockly-tool-box-row:hover {
+    background-color: rgba(0, 0, 0, .1);
+}
+
+#blockly_tool_box .blockly-tool-box-row.basic {
+    color: #1e90ff;
+    border-left: 8px solid rgb(30, 144, 255);
+}
+
+#blockly_tool_box .blockly-tool-box-row.basic.selected {
+    background-color: #1e90ff;
+}
+
+#blockly_tool_box .blockly-tool-box-row.neopixel {
+    color: #002050;
+    border-left: 8px solid #002050;
+}
+
+#blockly_tool_box .blockly-tool-box-row.neopixel.selected {
+    background-color: #002050;
+}
+
+#blockly_tool_box .blockly-tool-box-row.loop {
+    color: #00aa00;
+    border-left: 8px solid #00aa00;
+}
+
+#blockly_tool_box .blockly-tool-box-row.loop.selected {
+    background-color: #00aa00;
+}
+
+#blockly_tool_box .blockly-tool-box-row.selected {
+    color: #fff;
+}
+
+#blockly_tool_box .blockly-tool-box-row .icon {
+    font-size: 1.3rem;
+    margin: 0 .25em;
+}
+
+#blockly_tool_box .blockly-tool-box-row.basic .icon {
+    margin-top: -4px;
+}
+
+#blockly_tool_box .blockly-tool-box-row .label {
+    font-family: Roboto,Helvetica Neue,Helvetica,Arial,sans-serif !important;
+    font-weight: 200;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+#blockly_tool_box .blockly-tool-bow-list {
+    display: none;
+    position: absolute;
+    left: 100%;
+    width: 316px;
+    top: 0;
+    height: 100%;
+}
+
+#blockly_tool_box .blockly-tool-bow-list.show {
+    display: block;
+}
+
+#blockly_tool_box .blockly-flyout-label {
+    cursor: pointer;
+    fill: none;
+}
+
+#blockly_tool_box .blockly-flyout-label-icon {
+    transform: scale(0.05);
+}
+
+#blockly_tool_box .blockly-flyout-label-icon.basic {
+    fill: #1E90FF;
+}
+
+#blockly_tool_box .blockly-flyout-label-icon.neopixel {
+    fill: #002050;
+}
+
+#blockly_tool_box .blockly-flyout-label-icon.loop {
+    fill: #00aa00;
+}
+
+#blockly_tool_box .blockly-flyout-label-text {
+    fill: #fff;
+    font-size: 1.5rem;
+}
+
+#blockly_tool_box .blockly-tool-bow-list .blockly-flyout-background {
+    fill: #4b4949;
+}
+
+#arduino_editor_wrapper {
+    overflow: auto;
+    padding-left: 1em;
+}
+
+#arduino_code {
+    transform-origin: top left;
+    white-space: pre;
+    tab-size: 2;
+}
+
+#arduino_code_template {
+    display: none;
+}
+
+#copy_popup,
+#upload_popup {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    background-color: #3454d1;
+    color: #fff;
+    right: 16px;
+    bottom: -9999px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    opacity: 0;
+    padding: 2px;
+}
+
+#copy_popup_inner,
+#upload_popup_inner {
+    border: 2px solid #fff;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    border-radius: 6px;
+}
+
+@keyframes popup {
+    0% {
+        bottom: 0;
+        opacity: 0;
+    }
+    25%, 75% {
+        bottom: 16px;
+        opacity: 1;
+    }
+    100% {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+#copy_popup.show,
+#upload_popup.show {
+    animation-duration: 3s;
+    animation-name: popup;
+}
+
+.color {
+    display: inline-block !important;
+    color: transparent !important;
+    width: 32px !important;
+    height: 32px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    bottom: 16px;
+    right: 16px;
+    border-radius: 8px;
+    transition: opacity ease-in-out 0.3s;
+}
+
+.wrapper.hidden {
+    opacity: 0;
+}
+
+.wrapper.deep-hidden {
+    display: none;
+}
+
+#footer .button {
+    cursor: pointer;
+    color: #fff;
+    background-color: #3454d1;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    width: 56px;
+    height: 56px;
+}
+
+#footer .button:hover {
+    background-color: #2445c7;
+}
+
+#footer .button:active {
+    background-color: #2742ab;
+}
+
+#zoom_wrapper > .button:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#zoom_wrapper > .button:last-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+input.color,
+input.repeat-count,
+input.wait-in-ms,
+input.fade-out-in-ms,
+input.fade-in-in-ms {
+    outline: none;
+    border-style: solid;
+}
+
+input.repeat-count,
+input.wait-in-ms,
+input.fade-out-in-ms,
+input.fade-in-in-ms {
+    height: 32px;
+    font-size: 1rem;
+    text-align: center;
+    border-radius: 16px;
+    box-sizing: border-box;
+    font: 600 12pt "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;
+}
+
+input.repeat-count {
+    width: 40px;
+    border-color: #008000;
+}
+
+input.wait-in-ms {
+    position: relative;
+    width: 74px;
+    border-color: #176cbf;
+    padding-right: 10px;
+}
+
+input.fade-out-in-ms,
+input.fade-in-in-ms {
+    position: relative;
+    width: 74px;
+    border-color: #00183c;
+    padding-right: 10px;
+}
+
+div.wait-in-ms-wrapper.focused input.wait-in-ms,
+div.fade-out-in-ms-wrapper.focused input.fade-out-in-ms,
+div.fade-in-in-ms-wrapper.focused input.fade-in-in-ms {
+    padding-right: 0;
+}
+
+div.wait-in-ms-wrapper,
+div.fade-out-in-ms-wrapper,
+div.fade-in-in-ms-wrapper {
+    position: relative;
+}
+
+div.wait-in-ms-wrapper:not(.focused)::after,
+div.fade-out-in-ms-wrapper:not(.focused)::after,
+div.fade-in-in-ms-wrapper:not(.focused)::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 12px;
+    height: 12px;
+    top: 12px;
+    right: 9px;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMi43MSIgaGVpZ2h0PSI4Ljc5IiB2aWV3Qm94PSIwIDAgMTIuNzEgOC43OSI+PHRpdGxlPmRyb3Bkb3duLWFycm93PC90aXRsZT48ZyBvcGFjaXR5PSIwLjEiPjxwYXRoIGQ9Ik0xMi43MSwyLjQ0QTIuNDEsMi40MSwwLDAsMSwxMiw0LjE2TDguMDgsOC4wOGEyLjQ1LDIuNDUsMCwwLDEtMy40NSwwTDAuNzIsNC4xNkEyLjQyLDIuNDIsMCwwLDEsMCwyLjQ0LDIuNDgsMi40OCwwLDAsMSwuNzEuNzFDMSwwLjQ3LDEuNDMsMCw2LjM2LDBTMTEuNzUsMC40NiwxMiwuNzFBMi40NCwyLjQ0LDAsMCwxLDEyLjcxLDIuNDRaIiBmaWxsPSIjMjMxZjIwIi8+PC9nPjxwYXRoIGQ9Ik02LjM2LDcuNzlhMS40MywxLjQzLDAsMCwxLTEtLjQyTDEuNDIsMy40NWExLjQ0LDEuNDQsMCwwLDEsMC0yYzAuNTYtLjU2LDkuMzEtMC41Niw5Ljg3LDBhMS40NCwxLjQ0LDAsMCwxLDAsMkw3LjM3LDcuMzdBMS40MywxLjQzLDAsMCwxLDYuMzYsNy43OVoiIGZpbGw9IiM1NzVFNzUiLz48L3N2Zz4K");
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.blockly-element:hover {
+    cursor: grab;
+}
+
+.blockly-element .placeholder {
+    fill: #3454d1;
+    stroke: #1D2760;
+}
+
+.blockly-element .blockly-background-path {
+    fill: none;
+}
+
+.blockly-element.blockly-selected > .blockly-background-path {
+    /*filter: url(#blocklySelectedGlowFilter);*/
+}
+
+.blockly-element.blockly-disabled > path {
+    /*fill: url(#blocklyDisabledPattern);
+    fill-opacity: .8;
+    stroke-opacity: .8;*/
+}
+
+.blockly-element.blockly-disabled input {
+    /*opacity: .8;*/
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  appearance: textfield;
+}
+
+.context-list {
+    position: absolute;
+    font: 400 10pt "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;
+    color: #fff;
+    padding: 8px 0;
+}
+
+.context-list .list-item {
+    padding: 4px 16px;
+    cursor: pointer;
+}
+
+.context-list .list-item:hover {
+    background-color: rgba(0, 0, 0, .2);
+}
