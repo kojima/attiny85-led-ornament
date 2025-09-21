@@ -60,7 +60,8 @@ class PauseBlocklyElement extends CommandBlocklyElement {
             showContextList(
                 this._waitInMsInput,
                 [['0.1秒', 100], ['0.2秒', 200], ['0.5秒', 500], ['1秒', 1000], ['2秒', 2000]],
-                this._fill
+                this._fill,
+                100
             );
         });
         this._waitInMsInput.addEventListener('blur', (e) => {

@@ -517,7 +517,7 @@ const loadBlocklyData = () => {
     Editor.generateArduinoCode();
 }
 
-const showContextList = (target, values, backgroundColor) => {
+const showContextList = (target, values, backgroundColor, minWidth, align) => {
     const list = document.createElement('div');
     list.classList.add('context-list');
     list.style.backgroundColor = backgroundColor;
@@ -536,14 +536,19 @@ const showContextList = (target, values, backgroundColor) => {
         const item = document.createElement('div');
         item.innerText = v[0];
         item.classList.add('list-item');
+        if (align === 'right') {
+            item.classList.add('right');
+        }
         item.setAttribute('data-value', v[1]);
         item.addEventListener('click', handleClick);
         list.appendChild(item);
     });
     const rect = target.getBoundingClientRect();
+    const width = Math.max(minWidth, rect.width);
     list.style.top = `${rect.top + rect.height + 4}px`;
-    list.style.left = `${rect.left}px`;
-    list.style.width = `${rect.width}px`;
+    const offset = Math.max(0, (width - rect.width) / 2);
+    list.style.left = `${rect.left - offset}px`;
+    list.style.width = `${width}px`;
     const handleMouseDown = (e) => {
         if (!e.target.classList.contains('list-item') && e.target !== target) {
             list.remove();

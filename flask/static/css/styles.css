@@ -733,11 +733,17 @@ input[type=number] {
     font: 400 10pt "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;
     color: #fff;
     padding: 8px 0;
+    box-shadow: 0 0px 6px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
 }
 
 .context-list .list-item {
     padding: 4px 16px;
     cursor: pointer;
+}
+
+.context-list .list-item.right {
+    text-align: right;
 }
 
 .context-list .list-item:hover {

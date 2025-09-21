@@ -93,6 +93,15 @@ class LoopBlocklyElement extends ContainerBlocklyElement {
         this._repeatCountInput.setAttribute('step', 1);
         this._repeatCountInput.addEventListener('focus', (e) => {
             e.target.select();
+            showContextList(
+                this._repeatCountInput,
+                [
+                    ['1', 1], ['2', 2], ['3', 3], ['4', 4], ['5', 5],
+                    ['6', 6], ['7', 7], ['8', 8], ['9', 9], ['10', 10]],
+                this._fill,
+                60,
+                'right'
+            );
         });
         this._repeatCountInput.addEventListener('input', (e) => {
             this.render();
