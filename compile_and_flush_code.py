@@ -1,6 +1,7 @@
 import argparse
 import os
 import requests
+from requests.auth import HTTPBasicAuth
 import shutil
 import subprocess
 from subprocess import PIPE
@@ -30,6 +31,19 @@ parser.add_argument(
     help="File server URL",
 )
 
+parser.add_argument(
+    "--basic-auth-username",
+    type=str,
+    metavar="username",
+    help="Username for basic auth (if needed)",
+)
+
+parser.add_argument(
+    "--basic-auth-password",
+    type=str,
+    metavar="password",
+    help="Password for basic auth (if needed)",
+)
 
 args = parser.parse_args()
 
@@ -38,6 +52,11 @@ if not os.path.exists(args.arduino_cli):
 
 if not os.path.exists(args.avrdude):
     raise FileNotFoundError(f"{args.avrdude} not found")
+
+if args.basic_auth_username and args.basic_auth_password:
+    auth = HTTPBasicAuth(args.basic_auth_username, args.basic_auth_password)
+else:
+    auth = None
 
 root = None
 combobox = None
@@ -76,7 +95,7 @@ def compile_and_flush_code():
     url = args.file_server if args.file_server[-1] != "/" else args.file_server[:-1]
     url = f"{url}/download/{users[user]}"
     print(url)
-    r = requests.get(url, allow_redirects=True)
+    r = requests.get(url, allow_redirects=True, auth=auth)
     open("./onshaked_handler.ino", "wb").write(r.content)
 
     # compile
