@@ -21,12 +21,12 @@ def upload_file(user):
 @app.route("/download/<string:user>", methods=["GET"])
 def download_code(user):
 
-    downloadFileName = "onshaked_handler.ino"
-    downloadFile = f"{user}_onshaked_handler.ino"
+    download_file_name = "onshaked_handler.ino"
+    download_file = f"{user}_onshaked_handler.ino"
 
     return send_file(
-        downloadFile,
+        download_file,
         as_attachment=True,
-        download_name=downloadFileName,
+        download_name=download_file_name,
         mimetype="text/plain",
     )
