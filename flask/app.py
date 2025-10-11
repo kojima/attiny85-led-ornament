@@ -27,6 +27,6 @@ def download_code(user):
     return send_file(
         downloadFile,
         as_attachment=True,
-        attachment_filename=downloadFileName,
+        download_name=downloadFileName,
         mimetype="text/plain",
     )
