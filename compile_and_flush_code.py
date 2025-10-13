@@ -100,43 +100,48 @@ def compile_and_flush_code():
     open("./onshaked_handler.ino", "wb").write(r.content)
 
     # compile
+    command = f"{args.arduino_cli} compile --fqbn ATTinyCore:avr:attinyx5opti --build-path ./build"
     button.config(text="コンパイル中...")
     button.update()
     print("コンパイル中...")
-    print(
-        f"{args.arduino_cli} compile --fqbn ATTinyCore:avr:attinyx5opti --build-path ./build"
-    )
+    print(command)
     proc = subprocess.run(
-        f"{args.arduino_cli} compile --fqbn ATTinyCore:avr:attinyx5opti --build-path ./build",
+        command,
         shell=True,
         stdout=PIPE,
         stderr=PIPE,
     )
-    stdout = proc.stdout
-    print(stdout)
     if proc.returncode != 0:
-        messagebox.showerror(title='エラー', message='コンパイルに失敗しました')
+        stderror = proc.stderr.decode("utf-8")
+        print(stderror)
+        messagebox.showerror(title="エラー", message="コンパイルに失敗しました")
         button.config(text="コンパイル & 書き込み", state="normal")
         button.update()
         return
+    else:
+        stdout = proc.stdout.decode("utf-8")
+        print(stdout)
 
     # flush
+    command = f"{args.avrdude} -C./avrdude.conf -v -pattiny85 -cusbasp -Uflash:w:build/attiny85-led-ornament.ino.hex:i"
     button.config(text="書き込み中...")
     button.update()
     print("書き込み中...")
-    print(
-        f"{args.avrdude} -C./avrdude.conf -v -pattiny85 -cusbasp -Uflash:w:build/attiny85-led-ornament.ino.hex:i"
-    )
+    print(command)
     proc = subprocess.run(
-        f"{args.avrdude} -C./avrdude.conf -v -pattiny85 -cusbasp -Uflash:w:build/attiny85-led-ornament.ino.hex:i",
+        command,
         shell=True,
         stdout=PIPE,
         stderr=PIPE,
     )
-    stdout = proc.stdout
-    print(stdout)
     if proc.returncode != 0:
-        messagebox.showerror(title='エラー', message='書き込みに失敗しました')
+        stderror = proc.stderr.decode("utf-8")
+        print(stderror)
+        messagebox.showerror(title="エラー", message="書き込みに失敗しました")
+    else:
+        stdout = proc.stdout.decode("utf-8")
+        print(stdout)
+        messagebox.showinfo(title="完了", message="コンパイルと書き込みが完了しました")
 
     button.config(text="コンパイル & 書き込み", state="normal")
     button.update()
