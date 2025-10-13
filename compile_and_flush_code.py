@@ -7,6 +7,7 @@ import subprocess
 from subprocess import PIPE
 import tkinter
 import tkinter.ttk
+from tkinter import messagebox
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -113,22 +114,29 @@ def compile_and_flush_code():
     )
     stdout = proc.stdout
     print(stdout)
+    if proc.returncode != 0:
+        messagebox.showerror(title='エラー', message='コンパイルに失敗しました')
+        button.config(text="コンパイル & 書き込み", state="normal")
+        button.update()
+        return
 
     # flush
     button.config(text="書き込み中...")
     button.update()
     print("書き込み中...")
     print(
-        f"{args.avrdude} -C./avrdude.conf -v -pattiny85 -cusbasp -Uflash:w:build/led_ornament.ino.hex:i"
+        f"{args.avrdude} -C./avrdude.conf -v -pattiny85 -cusbasp -Uflash:w:build/attiny85-led-ornament.ino.hex:i"
     )
     proc = subprocess.run(
-        f"{args.avrdude} -C./avrdude.conf -v -pattiny85 -cusbasp -Uflash:w:build/led_ornament.ino.hex:i",
+        f"{args.avrdude} -C./avrdude.conf -v -pattiny85 -cusbasp -Uflash:w:build/attiny85-led-ornament.ino.hex:i",
         shell=True,
         stdout=PIPE,
         stderr=PIPE,
     )
     stdout = proc.stdout
     print(stdout)
+    if proc.returncode != 0:
+        messagebox.showerror(title='エラー', message='書き込みに失敗しました')
 
     button.config(text="コンパイル & 書き込み", state="normal")
     button.update()

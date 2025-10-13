@@ -1,5 +1,6 @@
 **/.DS_Store
 compile_and_flush_code.sh
+compile_and_flush_code.bat
 build/**
 flask/*.ino
 **/__pycache__
