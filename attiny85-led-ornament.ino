@@ -17,7 +17,7 @@
 Adafruit_NeoPixel pixels(NUMPIXELS, WS2812_DATA, NEO_GRB + NEO_KHZ800);
 
 long counter = 0;
-int wakeupUnit = 50;
+int wakeupUnit = 25;
 
 typedef struct rgb {
     int r;
