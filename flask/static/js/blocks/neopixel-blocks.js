@@ -142,8 +142,8 @@ class TurnOnAllLedsWithColorsBlocklyElement extends NeopixelBlocklyElement {
         let code = indent + '// LEDを点灯する\n';
         const hsv1 = this._convertRgbToHsv(this._colors.led1.r, this._colors.led1.g, this._colors.led1.b);
         code += indent + `led1 = {{${this._colors.led1.r}, ${this._colors.led1.g}, ${this._colors.led1.b}}, {${hsv1.h}, ${hsv1.s}, ${hsv1.v}}};\n`;
-        code += indent + `pixels.setPixelColor(0, pixels.Color(led1.rgb.r, led1.rgb.g, led1.rgb.b));\n`
         code += indent + 'pixels.setBrightness(255);\n';
+        code += indent + `pixels.setPixelColor(0, pixels.Color(led1.rgb.r, led1.rgb.g, led1.rgb.b));\n`
         code += indent + 'pixels.show();\n\n';
         return code;
     }
@@ -346,9 +346,9 @@ class FadeInAllLedsWithColorsBlocklyElement extends NeopixelBlocklyElement {
         // easeInQuad: https://easings.net/#easeInQuad
         code += indent + '\tratio = ratio * ratio;\n';
         code += indent + '\tpixels.clear();\n';
-        code += indent + `\tpixels.setPixelColor(0, pixels.Color(led1.rgb.r, led1.rgb.g, led1.rgb.b));\n`
         code += indent + '\tint brightness = floor(255 * ratio);\n';
         code += indent + '\tpixels.setBrightness(brightness);\n';
+        code += indent + `\tpixels.setPixelColor(0, pixels.Color(led1.rgb.r, led1.rgb.g, led1.rgb.b));\n`
         code += indent + '\tpixels.show();\n';
         code += indent + '\tdelay(10);\n';
         code += indent + '}\n\n';
@@ -538,9 +538,9 @@ class FadeOutAllLEDsBlocklyElement extends NeopixelBlocklyElement {
         // easeOutQuad: https://easings.net/#easeOutQuad
         code += indent + '\tratio = 1 - (1 - ratio) * (1 - ratio);\n';
         code += indent + '\tpixels.clear();\n';
-        code += indent + '\tpixels.setPixelColor(0, pixels.Color(led1.rgb.r, led1.rgb.g, led1.rgb.b));\n';
         code += indent + '\tint brightness = floor(255 * (1 - ratio));\n';
         code += indent + '\tpixels.setBrightness(brightness);\n';
+        code += indent + '\tpixels.setPixelColor(0, pixels.Color(led1.rgb.r, led1.rgb.g, led1.rgb.b));\n';
         code += indent + '\tpixels.show();\n';
         code += indent + '\tdelay(10);\n';
         code += indent + '}\n';
