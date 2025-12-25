@@ -407,7 +407,7 @@ text.blocklyText {
     transition: background-color 1s ease;
 }
 
-#blockly_tool_box .blockly-tool-box-row:hover {
+#blockly_tool_box .blockly-tool-box-row.hover {
     background-color: rgba(0, 0, 0, .1);
 }
 

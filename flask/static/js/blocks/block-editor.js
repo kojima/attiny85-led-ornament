@@ -102,91 +102,97 @@ const hideBlocklyToolBowList = () => {
 
 const blocks = {};
 
-window.addEventListener('mousemove', (e) => {
-    if (Editor.selectedBlock) {
-        e.preventDefault();
-        let prevBlock = Editor.selectedBlock.prevBlock;
-        if (prevBlock) {
-            prevBlock.unsetInnerBlock && prevBlock.unsetInnerBlock(Editor.selectedBlock);
-            prevBlock.nextBlock = null;
-            prevBlock.render();
-        }
-        Editor.selectedBlock.prevBlock = null;
-        Editor.selectedBlock.x = Editor.selectedBlock.absX;
-        Editor.selectedBlock.y = Editor.selectedBlock.absY;
-        const diffX = e.clientX - Editor.prevPoint.x;
-        const diffY = e.clientY - Editor.prevPoint.y;
-        Editor.selectedBlock.handleMouseMove(diffX, diffY);
-        Editor.prevPoint.x = e.clientX, Editor.prevPoint.y = e.clientY;
-        document.querySelector('#blockly_editor_background').setAttribute('transform', 'translate(0, 0)');
-
-        if (Editor.selectedBlock.insertable) {
-            Editor.acceptorBlock = null;
-            let minDist = Number.MAX_VALUE;
-            let nearestBlock = null;
-            Object.keys(blocks).forEach((id) => {
-                const block = blocks[id];
-                block.resetPlaceHolder();
-                const dist = block.distanceFrom(Editor.selectedBlock);
-                if (!Editor.selectedBlock.isAncestorOf(block) && dist < minDist) {
-                    nearestBlock = block;
-                    minDist = dist;
-                }
-            });
-            if (nearestBlock && nearestBlock.acceptable(Editor.selectedBlock)) {
-                Editor.acceptorBlock = nearestBlock;
+['mousemove', 'touchmove'].forEach((event) => {
+    window.addEventListener(event, (e) => {
+        const clientX = event === 'mousemove' ? e.clientX : e.changedTouches[0].clientX;
+        const clientY = event === 'mousemove' ? e.clientY : e.changedTouches[0].clientY;
+        if (Editor.selectedBlock) {
+            e.preventDefault();
+            let prevBlock = Editor.selectedBlock.prevBlock;
+            if (prevBlock) {
+                prevBlock.unsetInnerBlock && prevBlock.unsetInnerBlock(Editor.selectedBlock);
+                prevBlock.nextBlock = null;
+                prevBlock.render();
             }
+            Editor.selectedBlock.prevBlock = null;
+            Editor.selectedBlock.x = Editor.selectedBlock.absX;
+            Editor.selectedBlock.y = Editor.selectedBlock.absY;
+            const diffX = clientX - Editor.prevPoint.x;
+            const diffY = clientY - Editor.prevPoint.y;
+            Editor.selectedBlock.handleMouseMove(diffX, diffY);
+            Editor.prevPoint.x = clientX, Editor.prevPoint.y = clientY;
+            document.querySelector('#blockly_editor_background').setAttribute('transform', 'translate(0, 0)');
+
+            if (Editor.selectedBlock.insertable) {
+                Editor.acceptorBlock = null;
+                let minDist = Number.MAX_VALUE;
+                let nearestBlock = null;
+                Object.keys(blocks).forEach((id) => {
+                    const block = blocks[id];
+                    block.resetPlaceHolder();
+                    const dist = block.distanceFrom(Editor.selectedBlock);
+                    if (!Editor.selectedBlock.isAncestorOf(block) && dist < minDist) {
+                        nearestBlock = block;
+                        minDist = dist;
+                    }
+                });
+                if (nearestBlock && nearestBlock.acceptable(Editor.selectedBlock)) {
+                    Editor.acceptorBlock = nearestBlock;
+                }
+            }
+            hideBlocklyToolBowList();
+
+            if (Editor.selectedBlock.deletable) {
+                const trash = document.getElementById('blockly_trash_space');
+                trash.classList.add('active');
+                const rightPanePos = document.getElementById('right_pane').getBoundingClientRect();
+                const dist = clientX - rightPanePos.x;
+                const opacity = (0.9/ 250) * Math.min(250 - Math.min(250, dist - 100), 250);
+                trash.style.opacity = opacity;
+                opacity > 0.75 && trash.classList.add('red');
+                opacity === 0 && trash.classList.remove('red');
+            }
+
+            jscolor.install();
+        } else if (Editor.prevPoint.x && Editor.prevPoint.y) {
+            e.preventDefault();
+            const diffX = clientX - Editor.prevPoint.x;
+            const diffY = clientY - Editor.prevPoint.y;
+            document.querySelectorAll('#blockly_editor > g').forEach((elm) => {
+                const id = elm.getAttribute('id');
+                const block = blocks[id];
+                block.applyPositionDiff(diffX, diffY);
+                block.updateTransform();
+            });
+            Editor.prevPoint.x = clientX, Editor.prevPoint.y = clientY;
+            const background = document.querySelector('#blockly_editor_background');
+            background.setAttribute('transform', 'translate(0, 0)');
+            if (!background.classList.contains('moving')) background.classList.add('moving');
+
+            const gridPattern = document.querySelector('#blocklyGridPattern');
+            const x = parseInt(gridPattern.getAttribute('x'));
+            const y = parseInt(gridPattern.getAttribute('y'));
+            gridPattern.setAttribute('x', x + diffX);
+            gridPattern.setAttribute('y', y + diffY);
+            hideBlocklyToolBowList();
         }
-        hideBlocklyToolBowList();
-
-        if (Editor.selectedBlock.deletable) {
-            const trash = document.getElementById('blockly_trash_space');
-            trash.classList.add('active');
-            const rightPanePos = document.getElementById('right_pane').getBoundingClientRect();
-            const dist = e.clientX - rightPanePos.x;
-            const opacity = (0.9/ 250) * Math.min(250 - Math.min(250, dist - 100), 250);
-            trash.style.opacity = opacity;
-            opacity > 0.75 && trash.classList.add('red');
-            opacity === 0 && trash.classList.remove('red');
-        }
-
-        jscolor.install();
-    } else if (Editor.prevPoint.x && Editor.prevPoint.y) {
-        e.preventDefault();
-        const diffX = e.clientX - Editor.prevPoint.x;
-        const diffY = e.clientY - Editor.prevPoint.y;
-        document.querySelectorAll('#blockly_editor > g').forEach((elm) => {
-            const id = elm.getAttribute('id');
-            const block = blocks[id];
-            block.applyPositionDiff(diffX, diffY);
-            block.updateTransform();
-        });
-        Editor.prevPoint.x = e.clientX, Editor.prevPoint.y = e.clientY;
-        const background = document.querySelector('#blockly_editor_background');
-        background.setAttribute('transform', 'translate(0, 0)');
-        if (!background.classList.contains('moving')) background.classList.add('moving');
-
-        const gridPattern = document.querySelector('#blocklyGridPattern');
-        const x = parseInt(gridPattern.getAttribute('x'));
-        const y = parseInt(gridPattern.getAttribute('y'));
-        gridPattern.setAttribute('x', x + diffX);
-        gridPattern.setAttribute('y', y + diffY);
-        hideBlocklyToolBowList();
-    }
+    }, {passive: false});
 });
 
-window.addEventListener('mouseup', (e) => {
-    Editor.selectedBlock && Editor.selectedBlock.handleMouseUp();
-    if (Editor.selectedBlock && Editor.acceptorBlock) {
-        Editor.svg.appendChild(Editor.selectedBlock.element);
-        Editor.acceptorBlock.appendBlock(Editor.selectedBlock);
-        let prevBlock = Editor.selectedBlock.prevBlock;
-        prevBlock.render();
-    }
-    Editor.selectedBlock = null;
-    Editor.prevPoint.x = null, Editor.prevPoint.y = null;
-    document.querySelector('#blockly_editor rect').classList.remove('moving');
-    e.target.getAttribute('id') === 'blockly_editor_background' && hideBlocklyToolBowList();
+['mouseup', 'touchend'].forEach((event) => {
+    window.addEventListener(event, (e) => {
+        Editor.selectedBlock && Editor.selectedBlock.handleMouseUp();
+        if (Editor.selectedBlock && Editor.acceptorBlock) {
+            Editor.svg.appendChild(Editor.selectedBlock.element);
+            Editor.acceptorBlock.appendBlock(Editor.selectedBlock);
+            let prevBlock = Editor.selectedBlock.prevBlock;
+            prevBlock.render();
+        }
+        Editor.selectedBlock = null;
+        Editor.prevPoint.x = null, Editor.prevPoint.y = null;
+        document.querySelector('#blockly_editor rect').classList.remove('moving');
+        e.target.getAttribute('id') === 'blockly_editor_background' && hideBlocklyToolBowList();
+    });
 });
 
 window.addEventListener('load', () => {
@@ -241,7 +247,24 @@ window.addEventListener('load', () => {
     loopBlockForList.listItem = true;
     loopList.appendChild(loopBlockForList.element);
 
-    document.querySelector('#blockly_editor_background').addEventListener('mousedown', (e) => {
-        Editor.prevPoint.x = e.clientX, Editor.prevPoint.y = e.clientY;
+    ['mousedown', 'touchstart'].forEach((event) => {
+        document.querySelector('#blockly_editor_background').addEventListener(event, (e) => {
+            const clientX = event === 'mousedown' ? e.clientX : e.touches[0].clientX;
+            const clientY = event === 'mousedown' ? e.clientY : e.touches[0].clientY;
+            Editor.prevPoint.x = clientX, Editor.prevPoint.y = clientY;
+        });
+    });
+
+    document.querySelectorAll('#blockly_tool_box .blockly-tool-box-row').forEach((elm) => {
+        elm.addEventListener('mouseenter', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            elm.classList.add('hover');
+        });
+        elm.addEventListener('mouseleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            elm.classList.remove('hover');
+        });
     });
 });

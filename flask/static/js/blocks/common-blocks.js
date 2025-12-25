@@ -220,77 +220,84 @@ class BlocklyElement {
         g.appendChild(backgroundPath);
 
         const block = this;
-        g.addEventListener('mousedown', (e) => {
-            if (e.target.classList.contains('non-draggable')) return;
-            else if (block._listItem) {
+        ['mousedown', 'touchstart'].forEach((event) => {
+            g.addEventListener(event, (e) => {
+                const clientX = event === 'mousedown' ? e.clientX : e.touches[0].clientX;
+                const clientY = event === 'mousedown' ? e.clientY : e.touches[0].clientY;
+                if (e.target.classList.contains('non-draggable')) return;
+                else if (block._listItem) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const blockRect = block.element.getBoundingClientRect();
+                    const editorRect = Editor.canvas.getBoundingClientRect();
+                    const clone = new (block.getBlocklyClass())(
+                        blockRect.x - editorRect.x,
+                        blockRect.y - editorRect.y);
+                    blocks[clone.id] = clone;
+                    clone.listItem = false;
+                    clone.element.style.zIndex = 50;
+                    document.querySelector('#blockly_drag_space').appendChild(clone.element);
+                    Editor.selectedBlock = clone;
+                    //clone.select();
+                    clone._element.classList.add('grabbing');
+                    Editor.prevPoint.x = clientX, Editor.prevPoint.y = clientY;
+                } else {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const selected = document.querySelector('.blockly-selected');
+                    selected && selected.classList.remove('blockly-selected');
+                    const id = g.getAttribute('id');
+                    Editor.selectedBlock = blocks[id];
+                    //this.select();
+                    this._element.classList.add('grabbing');
+                    Editor.prevPoint.x = clientX, Editor.prevPoint.y = clientY;
+                }
+            }, false, {passive: false});
+        });
+        ['mouseup', 'touchend'].forEach((event) => {
+            g.addEventListener(event, (e) => {
+                const clientX = event === 'mouseup' ? e.clientX : e.changedTouches[0].clientX;
+                if (e.target.classList.contains('non-draggable')) return;
+
                 e.preventDefault();
                 e.stopPropagation();
-                const blockRect = block.element.getBoundingClientRect();
-                const editorRect = Editor.canvas.getBoundingClientRect();
-                const clone = new (block.getBlocklyClass())(
-                    blockRect.x - editorRect.x,
-                    blockRect.y - editorRect.y);
-                blocks[clone.id] = clone;
-                clone.listItem = false;
-                clone.element.style.zIndex = 50;
-                document.querySelector('#blockly_drag_space').appendChild(clone.element);
-                Editor.selectedBlock = clone;
-                //clone.select();
-                clone._element.classList.add('grabbing');
-                Editor.prevPoint.x = e.clientX, Editor.prevPoint.y = e.clientY;
-            } else {
-                e.preventDefault();
-                e.stopPropagation();
-                const selected = document.querySelector('.blockly-selected');
-                selected && selected.classList.remove('blockly-selected');
-                const id = g.getAttribute('id');
-                Editor.selectedBlock = blocks[id];
-                //this.select();
-                this._element.classList.add('grabbing');
-                Editor.prevPoint.x = e.clientX, Editor.prevPoint.y = e.clientY;
-            }
-        }, false);
-        g.addEventListener('mouseup', (e) => {
-            if (e.target.classList.contains('non-draggable')) return;
 
-            e.preventDefault();
-            e.stopPropagation();
+                if (Editor.acceptorBlock) {
+                    Editor.acceptorBlock.appendBlock(block);
+                    block._prevBlock && block._prevBlock.render();
+                }
+                Editor.selectedBlock.handleMouseUp();
+                hideBlocklyToolBowList();
 
-            if (Editor.acceptorBlock) {
-                Editor.acceptorBlock.appendBlock(block);
-                block._prevBlock && block._prevBlock.render();
-            }
-            block.handleMouseUp();
-            hideBlocklyToolBowList();
+                const rightPanePos = document.getElementById('right_pane').getBoundingClientRect();
+                const dist = clientX - rightPanePos.x;
+                !Editor.selectedBlock.prevBlock && Editor.canvas.appendChild(Editor.selectedBlock._element);
+                if (Editor.selectedBlock.deletable && dist > 0 && dist < 184) {
+                    delete blocks[Editor.selectedBlock.id];
+                    Editor.selectedBlock._element.remove();
+                }
+                Editor.selectedBlock = null;
+                Editor.prevPoint.x = null, Editor.prevPoint.y = null;
 
-            const rightPanePos = document.getElementById('right_pane').getBoundingClientRect();
-            const dist = e.clientX - rightPanePos.x;
-            !block.prevBlock && Editor.canvas.appendChild(block._element);
-            if (block.deletable && dist > 0 && dist < 184) {
-                delete blocks[block.id];
-                block._element.remove();
-            }
-            Editor.selectedBlock = null;
-            Editor.prevPoint.x = null, Editor.prevPoint.y = null;
+                const trash = document.getElementById('blockly_trash_space');
+                trash.classList.remove('active');
+                trash.classList.remove('red');
 
-            const trash = document.getElementById('blockly_trash_space');
-            trash.classList.remove('active');
-            trash.classList.remove('red');
+                // Editor.triggerBlock.executeSimulator();
+                this.replaySimulator();
 
-            // Editor.triggerBlock.executeSimulator();
-            this.replaySimulator();
+                for (const block of Object.values(blocks)) {
+                    block.element.classList.add('blockly-disabled');
+                }
 
-            for (const block of Object.values(blocks)) {
-                block.element.classList.add('blockly-disabled');
-            }
+                document.querySelectorAll('.placeholder').forEach((elm) => {
+                    elm.style.display = 'none';
+                });
 
-            document.querySelectorAll('.placeholder').forEach((elm) => {
-                elm.style.display = 'none';
-            });
-
-            saveBlocklyData();
-            Editor.generateArduinoCode();
-        }, false);
+                saveBlocklyData();
+                Editor.generateArduinoCode();
+            }, false, {passive: false});
+        });
 
         this._element = g;
 
@@ -525,7 +532,9 @@ const showContextList = (target, values, backgroundColor, minWidth, align) => {
         e.preventDefault();
         e.stopPropagation();
         list.remove();
-        document.body.removeEventListener('mousedown', handleMouseDown);
+        ['mousedown', 'touchstart'].forEach((event) => {
+            document.body.removeEventListener(event, handleMouseDown);
+        });
         const value = e.target.getAttribute('data-value');
         target.value = value;
         target.blur();
@@ -553,9 +562,13 @@ const showContextList = (target, values, backgroundColor, minWidth, align) => {
         if (!e.target.classList.contains('list-item') && e.target !== target) {
             list.remove();
             target.blur();
-            document.body.removeEventListener('mousedown', handleMouseDown);
+            ['mousedown', 'touchstart'].forEach((event) => {
+                document.body.removeEventListener(event, handleMouseDown);
+            });
         }
     }
-    document.body.addEventListener('mousedown', handleMouseDown, { capture: true });
+    ['mousedown', 'touchstart'].forEach((event) => {
+        document.body.addEventListener(event, handleMouseDown, { capture: true });
+    });
     document.body.appendChild(list);
 };
