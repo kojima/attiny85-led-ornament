@@ -2,5 +2,6 @@
 compile_and_flush_code.sh
 compile_and_flush_code.bat
 build/**
+flask/users.csv
 flask/*.ino
 **/__pycache__

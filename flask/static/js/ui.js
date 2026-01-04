@@ -195,11 +195,17 @@ window.addEventListener('load', () => {
             formData.append('code', code);
             xhr.send(formData);
             xhr.onload = function() {
-                document.getElementById('upload_popup').classList.add('show');
-                setTimeout(() => {
-                  document.getElementById('upload_popup').classList.remove('show');
-                  button.removeAttribute('disabled');
-                }, 3000);
+                const statusCode = xhr.status;
+                if (statusCode === 200) {
+                    document.getElementById('upload_popup').classList.add('show');
+                    setTimeout(() => {
+                    document.getElementById('upload_popup').classList.remove('show');
+                    button.removeAttribute('disabled');
+                    }, 3000);
+                } else {
+                    alert(xhr.response.message);
+                    button.removeAttribute('disabled');
+                }
             };
             xhr.onerror = function() {
                 alert('ファイルサーバーアクセス中に、エラーが発生しました。');
@@ -207,6 +213,22 @@ window.addEventListener('load', () => {
             };
         }
     );
+
+    document.getElementById('users').addEventListener('change', (e) => {
+        const user = e.target.value;
+        const wrapper = document.getElementById('upload_wrapper');
+        const url = new URL(window.location.href);
+        if (user.length > 0) {
+            url.searchParams.set('user', user);
+            wrapper.classList.remove('hidden');
+            const button = wrapper.querySelector('#upload_code');
+            button.setAttribute('data-user', user);
+        } else {
+            url.searchParams.delete('user');
+            wrapper.classList.add('hidden');
+        }
+        window.history.replaceState({}, '', url);
+    });
 });
 
 window.addEventListener('resize', () => {

@@ -474,6 +474,16 @@ void handleOnShaked() {
             </div>
         </div>
         <div id="footer">
+            <div id="users=wrapper">
+                <select id="users">
+                    <option value="">---</option>
+                    {% for user in users %}
+                        <option value="{{ user.username }}"{% if request.args.get("user") == user.username %} selected{% endif %}>
+                            {{ user.display_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
             <div id="upload_wrapper" class="wrapper hidden">
                 <button id="upload_code" class="button"><i class="fa-solid fa-arrow-up-from-bracket fa-2xl"></i></button>
             </div>

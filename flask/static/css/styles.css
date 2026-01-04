@@ -612,6 +612,19 @@ text.blocklyText {
     background-color: #2742ab;
 }
 
+#users {
+    padding: 8px 16px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    border-color: #ddd;
+    border-width: 2px;
+    outline: none;
+}
+
+#users:focus-visible {
+    outline: #ccc;
+}
+
 #zoom_wrapper > .button:first-child {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;

@@ -63,16 +63,7 @@ root = None
 combobox = None
 button = None
 
-users = {
-    "ユーザー1": "user1",
-    "ユーザー2": "user2",
-    "ユーザー3": "user3",
-    "ユーザー4": "user4",
-    "ユーザー5": "user5",
-    "ユーザー6": "user6",
-    "ユーザー7": "user7",
-    "ユーザー8": "user8",
-}
+users = {}
 
 
 def compile_and_flush_code():
@@ -146,6 +137,14 @@ def compile_and_flush_code():
     button.config(text="コンパイル & 書き込み", state="normal")
     button.update()
 
+
+url = args.file_server if args.file_server[-1] != "/" else args.file_server[:-1]
+url = f"{url}/download/users"
+r = requests.get(url, allow_redirects=True, auth=auth)
+if r.status_code != 200:
+    messagebox.showerror(title="エラー", message="サーバーにアクセスできません")
+    exit(-1)
+users = {user["username"]: user["display_name"] for user in r.json()["users"]}
 
 root = tkinter.Tk()
 root.title("LEDオーナメント | 書き込みツール")

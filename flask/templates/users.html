@@ -1,0 +1,43 @@
+<h3>Current users</h3>
+<h4>username,display name</h4>
+<form action="/users" method="post">
+    <div id="textarea_wrapper">
+        {% if ok %}<div class="popup success">Uploaded</div>{% endif %}
+        {% if error %}<div class="popup error">Error</div>{% endif %}
+        <textarea name="users" rows="16" cols="20">{{ users }}</textarea>
+    </div>
+    <div>
+        <input type="submit" value="upload" />
+    </div>
+</form>
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    #textarea_wrapper {
+        position: relative;
+    }
+    .popup {
+        position: absolute;
+        left: 0;
+        top: -1.5rem;
+        font-weight: 700;
+        animation: fadeout 5s ease-in forwards;
+    }
+    .success {
+        color: #2CAC6E;
+    }
+    .error {
+        color: #FB5B01;
+    }
+    @keyframes fadeout {
+        0% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+</style>
