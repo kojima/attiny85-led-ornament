@@ -144,7 +144,7 @@ r = requests.get(url, allow_redirects=True, auth=auth)
 if r.status_code != 200:
     messagebox.showerror(title="エラー", message="サーバーにアクセスできません")
     exit(-1)
-users = {user["username"]: user["display_name"] for user in r.json()["users"]}
+users = {user["display_name"]: user["username"] for user in r.json()["users"]}
 
 root = tkinter.Tk()
 root.title("LEDオーナメント | 書き込みツール")
